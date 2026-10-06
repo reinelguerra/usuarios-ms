@@ -1,0 +1,8 @@
+package com.plazoleta.usuarios.domain.spi;
+
+import com.plazoleta.usuarios.domain.model.Usuario;
+
+public interface UsuarioPersistencePort {
+
+    Usuario guardarUsuario(Usuario usuario);
+}
