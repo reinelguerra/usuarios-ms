@@ -5,6 +5,8 @@ import com.plazoleta.usuarios.domain.spi.UsuarioPersistencePort;
 import com.plazoleta.usuarios.infrastructure.output.jpa.entity.UsuarioEntity;
 import com.plazoleta.usuarios.infrastructure.output.jpa.mapper.UsuarioEntityMapper;
 import com.plazoleta.usuarios.infrastructure.output.jpa.repository.UsuarioRepository;
+import java.util.Optional;
+
 
 public class UsuarioJpaAdapter implements UsuarioPersistencePort {
 
@@ -21,5 +23,9 @@ public class UsuarioJpaAdapter implements UsuarioPersistencePort {
     public Usuario guardarUsuario(Usuario usuario) {
         UsuarioEntity guardado = usuarioRepository.save(usuarioEntityMapper.toEntity(usuario));
         return usuarioEntityMapper.toModel(guardado);
+    }
+        @Override
+    public Optional<Usuario> obtenerUsuarioPorId(Long id) {
+        return usuarioRepository.findById(id).map(usuarioEntityMapper::toModel);
     }
 }

@@ -6,7 +6,7 @@ import com.plazoleta.usuarios.domain.model.Rol;
 import com.plazoleta.usuarios.domain.model.Usuario;
 import com.plazoleta.usuarios.domain.spi.PasswordEncoderPort;
 import com.plazoleta.usuarios.domain.spi.UsuarioPersistencePort;
-
+import com.plazoleta.usuarios.domain.exception.UsuarioNoEncontradoException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.regex.Pattern;
@@ -35,7 +35,11 @@ public class UsuarioUseCase implements UsuarioServicePort {
         usuario.setClave(passwordEncoderPort.encriptar(usuario.getClave()));
         return usuarioPersistencePort.guardarUsuario(usuario);
     }
-
+    @Override
+    public Usuario obtenerUsuarioPorId(Long id) {
+        return usuarioPersistencePort.obtenerUsuarioPorId(id)
+                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+    }
     private void validarUsuario(Usuario usuario) {
         if (usuario == null) {
             throw new ValidacionException("Los datos del usuario son obligatorios");
