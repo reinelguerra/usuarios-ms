@@ -40,6 +40,11 @@ public class UsuarioRestController {
         Usuario creado = usuarioServicePort.crearEmpleado(usuarioRestMapper.toModelBasico(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
+        @PostMapping("/clientes")
+    public ResponseEntity<UsuarioResponseDto> crearCliente(@RequestBody UsuarioBasicoRequestDto request) {
+        Usuario creado = usuarioServicePort.crearCliente(usuarioRestMapper.toModelBasico(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioConsultaDto> obtenerUsuario(@PathVariable Long id) {
