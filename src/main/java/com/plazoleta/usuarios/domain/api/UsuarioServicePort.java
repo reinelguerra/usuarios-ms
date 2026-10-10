@@ -8,5 +8,7 @@ public interface UsuarioServicePort {
 
     Usuario crearEmpleado(Usuario usuario);
 
+    Usuario crearCliente(Usuario usuario);
+
     Usuario obtenerUsuarioPorId(Long id);
 }
