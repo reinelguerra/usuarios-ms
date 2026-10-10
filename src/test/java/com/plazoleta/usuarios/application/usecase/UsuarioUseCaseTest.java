@@ -212,4 +212,56 @@ class UsuarioUseCaseTest {
 
         assertEquals("Los datos del usuario son obligatorios", excepcion.getMessage());
     }
+        @Test
+    void crearCliente_conDatosValidosSinFecha_guardaConRolClienteYClaveEncriptada() {
+        Usuario usuario = usuarioValido();
+        usuario.setFechaNacimiento(null);
+        when(passwordEncoderPort.encriptar("secreta")).thenReturn("claveEncriptada");
+        when(usuarioPersistencePort.guardarUsuario(any(Usuario.class)))
+                .thenAnswer(invocacion -> invocacion.getArgument(0));
+
+        Usuario resultado = usuarioUseCase.crearCliente(usuario);
+
+        assertEquals(Rol.CLIENTE, resultado.getRol());
+        assertEquals("claveEncriptada", resultado.getClave());
+        verify(usuarioPersistencePort).guardarUsuario(resultado);
+    }
+
+    @Test
+    void crearCliente_ignoraElRolQueVengaEnLosDatos() {
+        Usuario usuario = usuarioValido();
+        usuario.setRol(Rol.ADMINISTRADOR);
+        when(passwordEncoderPort.encriptar("secreta")).thenReturn("claveEncriptada");
+        when(usuarioPersistencePort.guardarUsuario(any(Usuario.class)))
+                .thenAnswer(invocacion -> invocacion.getArgument(0));
+
+        Usuario resultado = usuarioUseCase.crearCliente(usuario);
+
+        assertEquals(Rol.CLIENTE, resultado.getRol());
+    }
+
+    @Test
+    void crearCliente_celularInvalido_lanzaValidacionYNoGuarda() {
+        Usuario usuario = usuarioValido();
+        usuario.setCelular("300abc");
+
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearCliente(usuario));
+
+        assertEquals("El celular es obligatorio, máximo 13 caracteres y puede iniciar con +", excepcion.getMessage());
+        verify(usuarioPersistencePort, never()).guardarUsuario(any(Usuario.class));
+        verifyNoInteractions(passwordEncoderPort);
+    }
+
+    @Test
+    void crearCliente_sinClave_lanzaValidacionYNoGuarda() {
+        Usuario usuario = usuarioValido();
+        usuario.setClave(null);
+
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearCliente(usuario));
+
+        assertEquals("La clave es obligatoria", excepcion.getMessage());
+        verify(usuarioPersistencePort, never()).guardarUsuario(any(Usuario.class));
+    }
 }

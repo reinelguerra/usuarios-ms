@@ -42,6 +42,12 @@ public class UsuarioUseCase implements UsuarioServicePort {
         return registrar(usuario, Rol.EMPLEADO);
     }
 
+        @Override
+    public Usuario crearCliente(Usuario usuario) {
+        validarDatosBasicos(usuario);
+        return registrar(usuario, Rol.CLIENTE);
+    }
+
     @Override
     public Usuario obtenerUsuarioPorId(Long id) {
         return usuarioPersistencePort.obtenerUsuarioPorId(id)
