@@ -151,4 +151,65 @@ class UsuarioUseCaseTest {
         usuario.setClave(null);
         assertValidacion("La clave es obligatoria", usuario);
     }
+
+        @Test
+    void crearEmpleado_conDatosValidosSinFecha_guardaConRolEmpleadoYClaveEncriptada() {
+        Usuario usuario = usuarioValido();
+        usuario.setFechaNacimiento(null);
+        when(passwordEncoderPort.encriptar("secreta")).thenReturn("claveEncriptada");
+        when(usuarioPersistencePort.guardarUsuario(any(Usuario.class)))
+                .thenAnswer(invocacion -> invocacion.getArgument(0));
+
+        Usuario resultado = usuarioUseCase.crearEmpleado(usuario);
+
+        assertEquals(Rol.EMPLEADO, resultado.getRol());
+        assertEquals("claveEncriptada", resultado.getClave());
+        verify(usuarioPersistencePort).guardarUsuario(resultado);
+    }
+
+    @Test
+    void crearEmpleado_ignoraElRolQueVengaEnLosDatos() {
+        Usuario usuario = usuarioValido();
+        usuario.setRol(Rol.ADMINISTRADOR);
+        when(passwordEncoderPort.encriptar("secreta")).thenReturn("claveEncriptada");
+        when(usuarioPersistencePort.guardarUsuario(any(Usuario.class)))
+                .thenAnswer(invocacion -> invocacion.getArgument(0));
+
+        Usuario resultado = usuarioUseCase.crearEmpleado(usuario);
+
+        assertEquals(Rol.EMPLEADO, resultado.getRol());
+    }
+
+    @Test
+    void crearEmpleado_documentoConLetras_lanzaValidacionYNoGuarda() {
+        Usuario usuario = usuarioValido();
+        usuario.setDocumentoIdentidad("12a45");
+
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearEmpleado(usuario));
+
+        assertEquals("El documento de identidad es obligatorio y debe ser solo numérico", excepcion.getMessage());
+        verify(usuarioPersistencePort, never()).guardarUsuario(any(Usuario.class));
+        verifyNoInteractions(passwordEncoderPort);
+    }
+
+    @Test
+    void crearEmpleado_sinCorreo_lanzaValidacionYNoGuarda() {
+        Usuario usuario = usuarioValido();
+        usuario.setCorreo(null);
+
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearEmpleado(usuario));
+
+        assertEquals("El correo es obligatorio y debe tener una estructura válida", excepcion.getMessage());
+        verify(usuarioPersistencePort, never()).guardarUsuario(any(Usuario.class));
+    }
+
+    @Test
+    void crearEmpleado_usuarioNulo_lanzaValidacion() {
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearEmpleado(null));
+
+        assertEquals("Los datos del usuario son obligatorios", excepcion.getMessage());
+    }
 }

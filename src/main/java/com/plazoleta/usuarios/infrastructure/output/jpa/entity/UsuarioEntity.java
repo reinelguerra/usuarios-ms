@@ -40,7 +40,7 @@ public class UsuarioEntity {
     @Column(nullable = false, length = 13)
     private String celular;
 
-    @Column(name = "fecha_nacimiento", nullable = false)
+    @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
 
     @Column(nullable = false, unique = true)
