@@ -9,4 +9,6 @@ public interface UsuarioPersistencePort {
     Usuario guardarUsuario(Usuario usuario);
 
     Optional<Usuario> obtenerUsuarioPorId(Long id);
+
+    Optional<Usuario> obtenerUsuarioPorCorreo(String correo);
 }
