@@ -9,9 +9,15 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import com.plazoleta.usuarios.domain.exception.CredencialesInvalidasException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+        @ExceptionHandler(CredencialesInvalidasException.class)
+    public ResponseEntity<ErrorResponse> manejarCredencialesInvalidas(CredencialesInvalidasException ex) {
+        return construir(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
 
     @ExceptionHandler(ValidacionException.class)
     public ResponseEntity<ErrorResponse> manejarValidacion(ValidacionException ex) {
