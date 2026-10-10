@@ -2,6 +2,7 @@ package com.plazoleta.usuarios.infrastructure.input.rest;
 
 import com.plazoleta.usuarios.domain.api.UsuarioServicePort;
 import com.plazoleta.usuarios.domain.model.Usuario;
+import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioBasicoRequestDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioConsultaDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioRequestDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioResponseDto;
@@ -31,6 +32,12 @@ public class UsuarioRestController {
     @PostMapping("/propietarios")
     public ResponseEntity<UsuarioResponseDto> crearPropietario(@RequestBody UsuarioRequestDto request) {
         Usuario creado = usuarioServicePort.crearPropietario(usuarioRestMapper.toModel(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
+    }
+
+    @PostMapping("/empleados")
+    public ResponseEntity<UsuarioResponseDto> crearEmpleado(@RequestBody UsuarioBasicoRequestDto request) {
+        Usuario creado = usuarioServicePort.crearEmpleado(usuarioRestMapper.toModelBasico(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 

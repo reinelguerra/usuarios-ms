@@ -6,5 +6,7 @@ public interface UsuarioServicePort {
 
     Usuario crearPropietario(Usuario usuario);
 
+    Usuario crearEmpleado(Usuario usuario);
+
     Usuario obtenerUsuarioPorId(Long id);
 }
