@@ -16,12 +16,18 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(new Info().title("API de usuarios").version("v1"))
+                .info(new Info()
+                        .title("usuarios-ms")
+                        .version("1.0.0")
+                        .description("Usuarios, roles y autenticación de la plazoleta de comidas. "
+                                + "El token JWT se obtiene con POST /api/v1/auth/login y se envía en las demás "
+                                + "peticiones. Solo el login y el registro de clientes son públicos."))
                 .addSecurityItem(new SecurityRequirement().addList(ESQUEMA))
                 .components(new Components().addSecuritySchemes(ESQUEMA,
                         new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
-                                .bearerFormat("JWT")));
+                                .bearerFormat("JWT")
+                                .description("Pega el token del login, sin la palabra Bearer")));
     }
 }
