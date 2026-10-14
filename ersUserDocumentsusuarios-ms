@@ -1,0 +1,32 @@
+[35msrc/main/java/com/plazoleta/usuarios/domain/model/Rol.java[m[36m:[m[32m4[m[36m:[m    [1;31mADMINISTRADOR[m,
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m15[m[36m:[mpublic class [1;31mAdministrador[mInicialRunner implements ApplicationRunner {
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m22[m[36m:[m    public [1;31mAdministrador[mInicialRunner(UsuarioRepository usuarioRepository,
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m37[m[36m:[m        UsuarioEntity [1;31madministrador[m = new UsuarioEntity();
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m38[m[36m:[m        [1;31madministrador[m.setNombre("[1;31mAdministrador[m");
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m39[m[36m:[m        [1;31madministrador[m.setApellido("Plazoleta");
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m40[m[36m:[m        [1;31madministrador[m.setDocumentoIdentidad("1000000000");
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m41[m[36m:[m        [1;31madministrador[m.setCelular("+573000000000");
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m42[m[36m:[m        [1;31madministrador[m.setFechaNacimiento(LocalDate.of(1990, 1, 1));
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m43[m[36m:[m        [1;31madministrador[m.setCorreo(correo);
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m44[m[36m:[m        [1;31madministrador[m.setClave(passwordEncoderPort.encriptar(clave));
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m45[m[36m:[m        [1;31madministrador[m.setRol(Rol.[1;31mADMINISTRADOR[m);
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AdministradorInicialRunner.java[m[36m:[m[32m46[m[36m:[m        usuarioRepository.save([1;31madministrador[m);
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AutenticacionBeanConfiguration.java[m[36m:[m[32m24[m[36m:[m    public SecretKey jwtSecretKey(@Value("${[1;31mjwt.secret[m}") String secreto) {
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AutenticacionBeanConfiguration.java[m[36m:[m[32m25[m[36m:[m        byte[] bytes = secreto.[1;31mgetBytes[m(StandardCharsets.UTF_8);
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/config/AutenticacionBeanConfiguration.java[m[36m:[m[32m27[m[36m:[m            throw new IllegalStateException("[1;31mJWT_SECRET[m debe tener al menos 32 caracteres");
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/input/rest/AuthRestController.java[m[36m:[m[32m7[m[36m:[mimport org.springframework.web.bind.annotation.[1;31mPostMapping[m;
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/input/rest/AuthRestController.java[m[36m:[m[32m22[m[36m:[m    @[1;31mPostMapping[m("/login")
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/input/rest/UsuarioRestController.java[m[36m:[m[32m14[m[36m:[mimport org.springframework.web.bind.annotation.[1;31mPostMapping[m;
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/input/rest/UsuarioRestController.java[m[36m:[m[32m32[m[36m:[m    @[1;31mPostMapping[m("/propietarios")
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/input/rest/UsuarioRestController.java[m[36m:[m[32m38[m[36m:[m    @[1;31mPostMapping[m("/empleados")
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/input/rest/UsuarioRestController.java[m[36m:[m[32m43[m[36m:[m        @[1;31mPostMapping[m("/clientes")
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/security/JwtTokenGeneratorAdapter.java[m[36m:[m[32m28[m[36m:[m                [1;31m.subject([musuario.getCorreo())
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/security/JwtTokenGeneratorAdapter.java[m[36m:[m[32m31[m[36m:[m                [1;31m.claim([m"id", usuario.getId())
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/security/JwtTokenGeneratorAdapter.java[m[36m:[m[32m32[m[36m:[m                [1;31m.claim([m"correo", usuario.getCorreo())
+[35msrc/main/java/com/plazoleta/usuarios/infrastructure/security/JwtTokenGeneratorAdapter.java[m[36m:[m[32m33[m[36m:[m                [1;31m.claim([m"rol", usuario.getRol().name())
+[35msrc/main/resources/application.properties[m[36m:[m[32m16[m[36m:[m[1;31mjwt.secret[m=${[1;31mJWT_SECRET[m}
+[35msrc/test/java/com/plazoleta/usuarios/UsuariosMsApplicationTests.java[m[36m:[m[32m6[m[36m:[m@SpringBootTest(properties = "[1;31mjwt.secret[m=clave-solo-para-pruebas-con-al-menos-32-caracteres")
+[35msrc/test/java/com/plazoleta/usuarios/application/usecase/AutenticacionUseCaseTest.java[m[36m:[m[32m51[m[36m:[m        usuario.setRol(Rol.[1;31mADMINISTRADOR[m);
+[35msrc/test/java/com/plazoleta/usuarios/application/usecase/UsuarioUseCaseTest.java[m[36m:[m[32m173[m[36m:[m        usuario.setRol(Rol.[1;31mADMINISTRADOR[m);
+[35msrc/test/java/com/plazoleta/usuarios/application/usecase/UsuarioUseCaseTest.java[m[36m:[m[32m233[m[36m:[m        usuario.setRol(Rol.[1;31mADMINISTRADOR[m);
+[35msrc/test/java/com/plazoleta/usuarios/infrastructure/security/JwtTokenGeneratorAdapterTest.java[m[36m:[m[32m30[m[36m:[m        return new SecretKeySpec(secreto.[1;31mgetBytes[m(StandardCharsets.UTF_8), "HmacSHA256");
