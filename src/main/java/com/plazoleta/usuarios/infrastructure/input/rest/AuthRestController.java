@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +35,12 @@ public class AuthRestController {
                     + "vigencia limitada, que lleva el id, el correo y el rol del usuario. "
                     + "Se envía en las demás peticiones como Authorization: Bearer <token>.")
     @SecurityRequirements
-    @ApiResponses({
-            @ApiResponse(responseCode = "400", description = DATOS_INVALIDOS,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401", description = CREDENCIALES_INVALIDAS,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "200", description = "Inicio de sesión correcto: devuelve el token JWT",
-                    content = @Content(schema = @Schema(implementation = LoginResponseDto.class)))
-    })
+    @ApiResponse(responseCode = "400", description = DATOS_INVALIDOS,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "401", description = CREDENCIALES_INVALIDAS,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "200", description = "Inicio de sesión correcto: devuelve el token JWT",
+            content = @Content(schema = @Schema(implementation = LoginResponseDto.class)))
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
         String token = autenticacionServicePort.iniciarSesion(request.correo(), request.clave());

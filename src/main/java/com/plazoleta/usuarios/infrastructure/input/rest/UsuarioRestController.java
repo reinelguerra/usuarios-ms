@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -35,10 +34,8 @@ import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.
 @RestController
 @RequestMapping("/api/v1/usuarios")
 @Tag(name = "Usuarios", description = "Creación de cuentas por rol y consulta de usuarios")
-@ApiResponses({
-        @ApiResponse(responseCode = "400", description = DATOS_INVALIDOS,
-                content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-})
+@ApiResponse(responseCode = "400", description = DATOS_INVALIDOS,
+        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 public class UsuarioRestController {
 
     private final UsuarioServicePort usuarioServicePort;
@@ -54,14 +51,12 @@ public class UsuarioRestController {
             description = "Solo el ADMINISTRADOR. Crea un usuario con rol PROPIETARIO. La clave se guarda "
                     + "encriptada y la fecha de nacimiento va en formato yyyy-MM-dd. Si un dato no cumple "
                     + "las reglas de validación, responde 400 con el motivo.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "403", description = SIN_PERMISO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "409", description = DUPLICADO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "403", description = SIN_PERMISO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "409", description = DUPLICADO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/propietarios")
     public ResponseEntity<UsuarioResponseDto> crearPropietario(@RequestBody UsuarioRequestDto request) {
@@ -72,14 +67,12 @@ public class UsuarioRestController {
     @Operation(summary = "Crear un empleado",
             description = "Solo el PROPIETARIO. Crea un usuario con rol EMPLEADO. La clave se guarda "
                     + "encriptada. Si un dato no cumple las reglas de validación, responde 400 con el motivo.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "403", description = SIN_PERMISO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "409", description = DUPLICADO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "403", description = SIN_PERMISO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "409", description = DUPLICADO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/empleados")
     public ResponseEntity<UsuarioResponseDto> crearEmpleado(@RequestBody UsuarioBasicoRequestDto request) {
@@ -91,10 +84,8 @@ public class UsuarioRestController {
             description = "Público: no requiere token. Crea un usuario con rol CLIENTE. La clave se guarda "
                     + "encriptada. Si un dato no cumple las reglas de validación, responde 400 con el motivo.")
     @SecurityRequirements
-    @ApiResponses({
-            @ApiResponse(responseCode = "409", description = DUPLICADO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
+    @ApiResponse(responseCode = "409", description = DUPLICADO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/clientes")
     public ResponseEntity<UsuarioResponseDto> crearCliente(@RequestBody UsuarioBasicoRequestDto request) {
@@ -106,14 +97,12 @@ public class UsuarioRestController {
             description = "Cualquier usuario autenticado, sin importar su rol. Devuelve el id, nombre, "
                     + "apellido, correo y rol (nunca la clave). Lo usa plazoleta-ms para comprobar que "
                     + "el propietario de un restaurante existe y tiene rol PROPIETARIO.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = USUARIO_NO_ENCONTRADO,
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "200", description = "Usuario encontrado",
-                    content = @Content(schema = @Schema(implementation = UsuarioConsultaDto.class)))
-    })
+    @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "404", description = USUARIO_NO_ENCONTRADO,
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "200", description = "Usuario encontrado",
+            content = @Content(schema = @Schema(implementation = UsuarioConsultaDto.class)))
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioConsultaDto> obtenerUsuario(
             @Parameter(description = "Identificador del usuario", example = "1")
