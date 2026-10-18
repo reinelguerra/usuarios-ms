@@ -63,8 +63,9 @@ class JwtTokenGeneratorAdapterTest {
 
     @Test
     void tokenFirmadoConOtraClave_noSeAcepta() {
-        String token = generarTokenDePrueba();
+               String token = generarTokenDePrueba();
+        JwtDecoder otroDecodificador = decodificador(OTRO_SECRETO);
 
-        assertThrows(JwtException.class, () -> decodificador(OTRO_SECRETO).decode(token));
+        assertThrows(JwtException.class, () -> otroDecodificador.decode(token));
     }
 }

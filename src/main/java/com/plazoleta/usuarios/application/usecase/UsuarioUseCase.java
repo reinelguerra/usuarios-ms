@@ -7,14 +7,16 @@ import com.plazoleta.usuarios.domain.model.Rol;
 import com.plazoleta.usuarios.domain.model.Usuario;
 import com.plazoleta.usuarios.domain.spi.PasswordEncoderPort;
 import com.plazoleta.usuarios.domain.spi.UsuarioPersistencePort;
-
+import java.time.ZoneId;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.regex.Pattern;
 
 public class UsuarioUseCase implements UsuarioServicePort {
 
-    private static final Pattern CORREO = Pattern.compile("^[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+$");
+    
+    private static final Pattern CORREO = Pattern.compile("^[\\w.+-]+@[\\w-]+\\.[\\w.-]+$");
+    private static final int CORREO_MAX_CARACTERES = 254;
     private static final Pattern SOLO_DIGITOS = Pattern.compile("^\\d+$");
     private static final Pattern CELULAR = Pattern.compile("^\\+?\\d+$");
     private static final int CELULAR_MAX_CARACTERES = 13;
@@ -79,7 +81,9 @@ public class UsuarioUseCase implements UsuarioServicePort {
                 || !CELULAR.matcher(usuario.getCelular()).matches()) {
             throw new ValidacionException("El celular es obligatorio, máximo 13 caracteres y puede iniciar con +");
         }
-        if (esVacio(usuario.getCorreo()) || !CORREO.matcher(usuario.getCorreo()).matches()) {
+                if (esVacio(usuario.getCorreo())
+                || usuario.getCorreo().length() > CORREO_MAX_CARACTERES
+                || !CORREO.matcher(usuario.getCorreo()).matches()) {
             throw new ValidacionException("El correo es obligatorio y debe tener una estructura válida");
         }
         if (esVacio(usuario.getClave())) {
@@ -91,7 +95,7 @@ public class UsuarioUseCase implements UsuarioServicePort {
         if (usuario.getFechaNacimiento() == null) {
             throw new ValidacionException("La fecha de nacimiento es obligatoria");
         }
-        if (Period.between(usuario.getFechaNacimiento(), LocalDate.now()).getYears() < EDAD_MINIMA) {
+        if (Period.between(usuario.getFechaNacimiento(), LocalDate.now(ZoneId.systemDefault())).getYears() < EDAD_MINIMA) {
             throw new ValidacionException("El usuario debe ser mayor de edad");
         }
     }
