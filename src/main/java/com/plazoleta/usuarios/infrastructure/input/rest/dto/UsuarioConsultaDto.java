@@ -7,5 +7,7 @@ public record UsuarioConsultaDto(
         String nombre,
         String apellido,
         String correo,
-        Rol rol) {
+        String celular,
+        Rol rol,
+        Long idRestaurante) {
 }

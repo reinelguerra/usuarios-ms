@@ -38,9 +38,10 @@ public class UsuarioUseCase implements UsuarioServicePort {
         return registrar(usuario, Rol.PROPIETARIO);
     }
 
-    @Override
+     @Override
     public Usuario crearEmpleado(Usuario usuario) {
         validarDatosBasicos(usuario);
+        validarRestauranteDelEmpleado(usuario);
         return registrar(usuario, Rol.EMPLEADO);
     }
 
@@ -88,6 +89,12 @@ public class UsuarioUseCase implements UsuarioServicePort {
         }
         if (esVacio(usuario.getClave())) {
             throw new ValidacionException("La clave es obligatoria");
+        }
+    }
+
+        private void validarRestauranteDelEmpleado(Usuario usuario) {
+        if (usuario.getIdRestaurante() == null || usuario.getIdRestaurante() <= 0) {
+            throw new ValidacionException("El restaurante del empleado es obligatorio y debe ser un id válido");
         }
     }
 
