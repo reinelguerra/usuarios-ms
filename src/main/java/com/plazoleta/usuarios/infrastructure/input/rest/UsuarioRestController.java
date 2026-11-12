@@ -1,5 +1,5 @@
 package com.plazoleta.usuarios.infrastructure.input.rest;
-
+import com.plazoleta.usuarios.infrastructure.input.rest.dto.EmpleadoRequestDto;
 import com.plazoleta.usuarios.domain.api.UsuarioServicePort;
 import com.plazoleta.usuarios.domain.model.Usuario;
 import com.plazoleta.usuarios.infrastructure.exception.ErrorResponse;
@@ -65,7 +65,7 @@ public class UsuarioRestController {
     }
 
     @Operation(summary = "Crear un empleado",
-            description = "Solo el PROPIETARIO. Crea un usuario con rol EMPLEADO. La clave se guarda "
+            description = "Solo el PROPIETARIO. Crea un usuario con rol EMPLEADO asociado al restaurante de idRestaurante. La clave se guarda "
                     + "encriptada. Si un dato no cumple las reglas de validación, responde 400 con el motivo.")
     @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -75,8 +75,8 @@ public class UsuarioRestController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/empleados")
-    public ResponseEntity<UsuarioResponseDto> crearEmpleado(@RequestBody UsuarioBasicoRequestDto request) {
-        Usuario creado = usuarioServicePort.crearEmpleado(usuarioRestMapper.toModelBasico(request));
+        public ResponseEntity<UsuarioResponseDto> crearEmpleado(@RequestBody EmpleadoRequestDto request) {
+        Usuario creado = usuarioServicePort.crearEmpleado(usuarioRestMapper.toModelEmpleado(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 

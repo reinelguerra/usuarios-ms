@@ -1,6 +1,7 @@
 package com.plazoleta.usuarios.infrastructure.input.rest.mapper;
 
 import com.plazoleta.usuarios.domain.model.Usuario;
+import com.plazoleta.usuarios.infrastructure.input.rest.dto.EmpleadoRequestDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioBasicoRequestDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioConsultaDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioRequestDto;
@@ -13,12 +14,19 @@ public interface UsuarioRestMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "rol", ignore = true)
+    @Mapping(target = "idRestaurante", ignore = true)
     Usuario toModel(UsuarioRequestDto request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "rol", ignore = true)
     @Mapping(target = "fechaNacimiento", ignore = true)
+    @Mapping(target = "idRestaurante", ignore = true)
     Usuario toModelBasico(UsuarioBasicoRequestDto request);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "rol", ignore = true)
+    @Mapping(target = "fechaNacimiento", ignore = true)
+    Usuario toModelEmpleado(EmpleadoRequestDto request);
 
     UsuarioResponseDto toResponse(Usuario usuario);
 

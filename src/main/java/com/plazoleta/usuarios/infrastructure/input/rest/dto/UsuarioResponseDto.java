@@ -12,5 +12,6 @@ public record UsuarioResponseDto(
         String celular,
         LocalDate fechaNacimiento,
         String correo,
-        Rol rol) {
+        Rol rol,
+        Long idRestaurante) {
 }
