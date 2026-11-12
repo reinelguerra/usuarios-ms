@@ -44,6 +44,7 @@ class UsuarioUseCaseTest {
         usuario.setDocumentoIdentidad("123456789");
         usuario.setCelular("+573005698325");
         usuario.setFechaNacimiento(LocalDate.of(1990, 5, 20));
+        usuario.setIdRestaurante(10L);
         usuario.setCorreo("ana.perez@mail.com");
         usuario.setClave("secreta");
         return usuario;
@@ -68,6 +69,7 @@ class UsuarioUseCaseTest {
 
         assertEquals(Rol.PROPIETARIO, resultado.getRol());
         assertEquals("claveEncriptada", resultado.getClave());
+        assertEquals(Long.valueOf(10L), resultado.getIdRestaurante());
         verify(usuarioPersistencePort).guardarUsuario(resultado);
     }
 
@@ -171,6 +173,7 @@ class UsuarioUseCaseTest {
     void crearEmpleado_ignoraElRolQueVengaEnLosDatos() {
         Usuario usuario = usuarioValido();
         usuario.setRol(Rol.ADMINISTRADOR);
+        usuario.setIdRestaurante(10L);
         when(passwordEncoderPort.encriptar("secreta")).thenReturn("claveEncriptada");
         when(usuarioPersistencePort.guardarUsuario(any(Usuario.class)))
                 .thenAnswer(invocacion -> invocacion.getArgument(0));
@@ -211,6 +214,46 @@ class UsuarioUseCaseTest {
                 () -> usuarioUseCase.crearEmpleado(null));
 
         assertEquals("Los datos del usuario son obligatorios", excepcion.getMessage());
+    }
+
+        @Test
+    void crearEmpleado_sinRestaurante_lanzaValidacionYNoGuarda() {
+        Usuario usuario = usuarioValido();
+        usuario.setFechaNacimiento(null);
+        usuario.setIdRestaurante(null);
+
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearEmpleado(usuario));
+
+        assertEquals("El restaurante del empleado es obligatorio y debe ser un id válido", excepcion.getMessage());
+        verify(usuarioPersistencePort, never()).guardarUsuario(any(Usuario.class));
+        verifyNoInteractions(passwordEncoderPort);
+    }
+
+    @Test
+    void crearEmpleado_restauranteConIdCero_lanzaValidacionYNoGuarda() {
+        Usuario usuario = usuarioValido();
+        usuario.setFechaNacimiento(null);
+        usuario.setIdRestaurante(0L);
+
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearEmpleado(usuario));
+
+        assertEquals("El restaurante del empleado es obligatorio y debe ser un id válido", excepcion.getMessage());
+        verify(usuarioPersistencePort, never()).guardarUsuario(any(Usuario.class));
+    }
+
+    @Test
+    void crearEmpleado_restauranteConIdNegativo_lanzaValidacionYNoGuarda() {
+        Usuario usuario = usuarioValido();
+        usuario.setFechaNacimiento(null);
+        usuario.setIdRestaurante(-5L);
+
+        ValidacionException excepcion = assertThrows(ValidacionException.class,
+                () -> usuarioUseCase.crearEmpleado(usuario));
+
+        assertEquals("El restaurante del empleado es obligatorio y debe ser un id válido", excepcion.getMessage());
+        verify(usuarioPersistencePort, never()).guardarUsuario(any(Usuario.class));
     }
         @Test
     void crearCliente_conDatosValidosSinFecha_guardaConRolClienteYClaveEncriptada() {
