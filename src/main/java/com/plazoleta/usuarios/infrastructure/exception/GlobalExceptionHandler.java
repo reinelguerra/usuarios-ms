@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import com.plazoleta.usuarios.domain.exception.CredencialesInvalidasException;
+import com.plazoleta.usuarios.domain.util.MensajeError;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,19 +32,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> manejarDuplicado(DataIntegrityViolationException ex) {
-        return construir(HttpStatus.CONFLICT, "El correo o el documento de identidad ya están registrados");
-    }
+        return construir(HttpStatus.CONFLICT, MensajeError.USUARIO_DUPLICADO);    }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> manejarCuerpoInvalido(HttpMessageNotReadableException ex) {
-        return construir(HttpStatus.BAD_REQUEST,
-                "El cuerpo de la petición no es válido. Revisa los campos y que la fecha tenga el formato yyyy-MM-dd");
-    }
+        return construir(HttpStatus.BAD_REQUEST, MensajeError.CUERPO_INVALIDO);    }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> manejarParametroInvalido(MethodArgumentTypeMismatchException ex) {
-        return construir(HttpStatus.BAD_REQUEST, "El valor del parámetro en la ruta no es válido");
-    }
+        return construir(HttpStatus.BAD_REQUEST, MensajeError.PARAMETRO_RUTA_INVALIDO);    }
 
     private ResponseEntity<ErrorResponse> construir(HttpStatus status, String mensaje) {
         return ResponseEntity.status(status).body(new ErrorResponse(mensaje, status.value()));
