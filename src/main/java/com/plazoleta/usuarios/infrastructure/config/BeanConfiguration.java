@@ -8,6 +8,8 @@ import com.plazoleta.usuarios.infrastructure.output.jpa.adapter.UsuarioJpaAdapte
 import com.plazoleta.usuarios.infrastructure.output.jpa.mapper.UsuarioEntityMapper;
 import com.plazoleta.usuarios.infrastructure.output.jpa.repository.UsuarioRepository;
 import com.plazoleta.usuarios.infrastructure.security.BCryptPasswordEncoderAdapter;
+import com.plazoleta.usuarios.application.handler.UsuarioHandler;
+import com.plazoleta.usuarios.application.handler.UsuarioHandlerImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,5 +31,10 @@ public class BeanConfiguration {
     public UsuarioServicePort usuarioServicePort(UsuarioPersistencePort usuarioPersistencePort,
                                                  PasswordEncoderPort passwordEncoderPort) {
         return new UsuarioUseCase(usuarioPersistencePort, passwordEncoderPort);
+    }
+    
+    @Bean
+    public UsuarioHandler usuarioHandler(UsuarioServicePort usuarioServicePort) {
+        return new UsuarioHandlerImpl(usuarioServicePort);
     }
 }

@@ -1,6 +1,6 @@
 package com.plazoleta.usuarios.infrastructure.input.rest;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.EmpleadoRequestDto;
-import com.plazoleta.usuarios.domain.api.UsuarioServicePort;
+import com.plazoleta.usuarios.application.handler.UsuarioHandler;
 import com.plazoleta.usuarios.domain.model.Usuario;
 import com.plazoleta.usuarios.infrastructure.exception.ErrorResponse;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioBasicoRequestDto;
@@ -38,12 +38,12 @@ import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 public class UsuarioRestController {
 
-    private final UsuarioServicePort usuarioServicePort;
+    private final UsuarioHandler usuarioHandler;
     private final UsuarioRestMapper usuarioRestMapper;
 
-    public UsuarioRestController(UsuarioServicePort usuarioServicePort,
+    public UsuarioRestController(UsuarioHandler usuarioHandler,
                                  UsuarioRestMapper usuarioRestMapper) {
-        this.usuarioServicePort = usuarioServicePort;
+        this.usuarioHandler = usuarioHandler;
         this.usuarioRestMapper = usuarioRestMapper;
     }
 
@@ -60,7 +60,7 @@ public class UsuarioRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/propietarios")
     public ResponseEntity<UsuarioResponseDto> crearPropietario(@RequestBody UsuarioRequestDto request) {
-        Usuario creado = usuarioServicePort.crearPropietario(usuarioRestMapper.toModel(request));
+        Usuario creado = usuarioHandler.crearPropietario(usuarioRestMapper.toModel(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
@@ -76,7 +76,7 @@ public class UsuarioRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/empleados")
         public ResponseEntity<UsuarioResponseDto> crearEmpleado(@RequestBody EmpleadoRequestDto request) {
-        Usuario creado = usuarioServicePort.crearEmpleado(usuarioRestMapper.toModelEmpleado(request));
+        Usuario creado = usuarioHandler.crearEmpleado(usuarioRestMapper.toModelEmpleado(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
@@ -89,7 +89,7 @@ public class UsuarioRestController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/clientes")
     public ResponseEntity<UsuarioResponseDto> crearCliente(@RequestBody UsuarioBasicoRequestDto request) {
-        Usuario creado = usuarioServicePort.crearCliente(usuarioRestMapper.toModelBasico(request));
+        Usuario creado = usuarioHandler.crearCliente(usuarioRestMapper.toModelBasico(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
@@ -107,7 +107,7 @@ public class UsuarioRestController {
     public ResponseEntity<UsuarioConsultaDto> obtenerUsuario(
             @Parameter(description = "Identificador del usuario", example = "1")
             @PathVariable Long id) {
-        Usuario usuario = usuarioServicePort.obtenerUsuarioPorId(id);
+        Usuario usuario = usuarioHandler.obtenerUsuarioPorId(id);
         return ResponseEntity.ok(usuarioRestMapper.toConsulta(usuario));
     }
 }

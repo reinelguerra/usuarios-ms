@@ -1,6 +1,6 @@
 package com.plazoleta.usuarios.infrastructure.input.rest;
 
-import com.plazoleta.usuarios.domain.api.AutenticacionServicePort;
+import com.plazoleta.usuarios.application.handler.AutenticacionHandler;
 import com.plazoleta.usuarios.infrastructure.exception.ErrorResponse;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.LoginRequestDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.LoginResponseDto;
@@ -24,10 +24,10 @@ import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.
 @Tag(name = "Autenticación", description = "Inicio de sesión y generación del token JWT")
 public class AuthRestController {
 
-    private final AutenticacionServicePort autenticacionServicePort;
+    private final AutenticacionHandler autenticacionHandler;
 
-    public AuthRestController(AutenticacionServicePort autenticacionServicePort) {
-        this.autenticacionServicePort = autenticacionServicePort;
+    public AuthRestController(AutenticacionHandler autenticacionHandler) {
+        this.autenticacionHandler = autenticacionHandler;
     }
 
     @Operation(summary = "Iniciar sesión",
@@ -43,7 +43,7 @@ public class AuthRestController {
             content = @Content(schema = @Schema(implementation = LoginResponseDto.class)))
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
-        String token = autenticacionServicePort.iniciarSesion(request.correo(), request.clave());
+        String token = autenticacionHandler.iniciarSesion(request.correo(), request.clave());
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
 }
