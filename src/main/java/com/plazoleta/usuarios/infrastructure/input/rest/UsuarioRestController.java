@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import jakarta.validation.Valid;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.DATOS_INVALIDOS;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.DUPLICADO;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.NO_AUTENTICADO;
@@ -59,7 +59,7 @@ public class UsuarioRestController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/propietarios")
-    public ResponseEntity<UsuarioResponseDto> crearPropietario(@RequestBody UsuarioRequestDto request) {
+    public ResponseEntity<UsuarioResponseDto> crearPropietario(@Valid @RequestBody  UsuarioRequestDto request) {
         Usuario creado = usuarioHandler.crearPropietario(usuarioRestMapper.toModel(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
@@ -75,7 +75,7 @@ public class UsuarioRestController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/empleados")
-        public ResponseEntity<UsuarioResponseDto> crearEmpleado(@RequestBody EmpleadoRequestDto request) {
+        public ResponseEntity<UsuarioResponseDto> crearEmpleado(@Valid @RequestBody  EmpleadoRequestDto request) {
         Usuario creado = usuarioHandler.crearEmpleado(usuarioRestMapper.toModelEmpleado(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
@@ -88,7 +88,7 @@ public class UsuarioRestController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/clientes")
-    public ResponseEntity<UsuarioResponseDto> crearCliente(@RequestBody UsuarioBasicoRequestDto request) {
+    public ResponseEntity<UsuarioResponseDto> crearCliente(@Valid @RequestBody  UsuarioBasicoRequestDto request) {
         Usuario creado = usuarioHandler.crearCliente(usuarioRestMapper.toModelBasico(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }

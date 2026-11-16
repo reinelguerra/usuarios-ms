@@ -8,7 +8,7 @@ import com.plazoleta.usuarios.domain.model.Usuario;
 import com.plazoleta.usuarios.domain.spi.PasswordEncoderPort;
 import com.plazoleta.usuarios.domain.spi.UsuarioPersistencePort;
 import com.plazoleta.usuarios.domain.util.MensajeError;
-
+import com.plazoleta.usuarios.domain.util.ReglasUsuario;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -16,11 +16,11 @@ import java.util.regex.Pattern;
 
 public class UsuarioUseCase implements UsuarioServicePort {
 
-    private static final Pattern CORREO = Pattern.compile("^[\\w.+-]+@[\\w-]+\\.[\\w.-]+$");
-    private static final int CORREO_MAX_CARACTERES = 254;
-    private static final Pattern SOLO_DIGITOS = Pattern.compile("^\\d+$");
-    private static final Pattern CELULAR = Pattern.compile("^\\+?\\d+$");
-    private static final int CELULAR_MAX_CARACTERES = 13;
+     private static final Pattern CORREO = Pattern.compile(ReglasUsuario.REGEX_CORREO);
+    private static final int CORREO_MAX_CARACTERES = ReglasUsuario.CORREO_MAX_CARACTERES;
+    private static final Pattern SOLO_DIGITOS = Pattern.compile(ReglasUsuario.REGEX_SOLO_DIGITOS);
+    private static final Pattern CELULAR = Pattern.compile(ReglasUsuario.REGEX_CELULAR);
+    private static final int CELULAR_MAX_CARACTERES = ReglasUsuario.CELULAR_MAX_CARACTERES;
     private static final int EDAD_MINIMA = 18;
 
     private final UsuarioPersistencePort usuarioPersistencePort;

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import jakarta.validation.Valid;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.CREDENCIALES_INVALIDAS;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.DATOS_INVALIDOS;
 
@@ -42,7 +42,7 @@ public class AuthRestController {
     @ApiResponse(responseCode = "200", description = "Inicio de sesión correcto: devuelve el token JWT",
             content = @Content(schema = @Schema(implementation = LoginResponseDto.class)))
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody  LoginRequestDto request) {
         String token = autenticacionHandler.iniciarSesion(request.correo(), request.clave());
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
