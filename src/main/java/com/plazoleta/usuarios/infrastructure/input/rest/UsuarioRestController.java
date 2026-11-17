@@ -64,9 +64,12 @@ public class UsuarioRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
-    @Operation(summary = "Crear un empleado",
-            description = "Solo el PROPIETARIO. Crea un usuario con rol EMPLEADO asociado al restaurante de idRestaurante. La clave se guarda "
-                    + "encriptada. Si un dato no cumple las reglas de validación, responde 400 con el motivo.")
+        @Operation(summary = "Crear un empleado",
+            description = "Solo el PROPIETARIO. Crea un usuario con rol EMPLEADO asociado al restaurante "
+                    + "indicado en idRestaurante, que es obligatorio y debe ser un número positivo (este "
+                    + "servicio no comprueba que el restaurante exista en plazoleta-ms). La clave se guarda "
+                    + "encriptada. Si un dato no cumple las reglas de validación, responde 400 con el motivo; "
+                    + "si hay varios errores, se listan todos separados por punto y coma.")
     @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "403", description = SIN_PERMISO,
@@ -93,10 +96,12 @@ public class UsuarioRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
-    @Operation(summary = "Consultar un usuario por id",
+       @Operation(summary = "Consultar un usuario por id",
             description = "Cualquier usuario autenticado, sin importar su rol. Devuelve el id, nombre, "
-                    + "apellido, correo y rol (nunca la clave). Lo usa plazoleta-ms para comprobar que "
-                    + "el propietario de un restaurante existe y tiene rol PROPIETARIO.")
+                    + "apellido, correo, celular, rol e idRestaurante (este último solo lo tienen los "
+                    + "empleados); nunca devuelve la clave. Lo usa plazoleta-ms para comprobar que el "
+                    + "propietario de un restaurante existe y tiene rol PROPIETARIO, y para conocer el "
+                    + "celular de un usuario y el restaurante de un empleado.")
     @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = USUARIO_NO_ENCONTRADO,
