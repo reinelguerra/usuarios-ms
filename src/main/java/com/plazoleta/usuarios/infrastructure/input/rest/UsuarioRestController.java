@@ -1,6 +1,6 @@
 package com.plazoleta.usuarios.infrastructure.input.rest;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.EmpleadoRequestDto;
-import com.plazoleta.usuarios.domain.api.UsuarioServicePort;
+import com.plazoleta.usuarios.application.handler.UsuarioHandler;
 import com.plazoleta.usuarios.domain.model.Usuario;
 import com.plazoleta.usuarios.infrastructure.exception.ErrorResponse;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.UsuarioBasicoRequestDto;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import jakarta.validation.Valid;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.DATOS_INVALIDOS;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.DUPLICADO;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.NO_AUTENTICADO;
@@ -38,12 +38,12 @@ import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
 public class UsuarioRestController {
 
-    private final UsuarioServicePort usuarioServicePort;
+    private final UsuarioHandler usuarioHandler;
     private final UsuarioRestMapper usuarioRestMapper;
 
-    public UsuarioRestController(UsuarioServicePort usuarioServicePort,
+    public UsuarioRestController(UsuarioHandler usuarioHandler,
                                  UsuarioRestMapper usuarioRestMapper) {
-        this.usuarioServicePort = usuarioServicePort;
+        this.usuarioHandler = usuarioHandler;
         this.usuarioRestMapper = usuarioRestMapper;
     }
 
@@ -59,14 +59,17 @@ public class UsuarioRestController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/propietarios")
-    public ResponseEntity<UsuarioResponseDto> crearPropietario(@RequestBody UsuarioRequestDto request) {
-        Usuario creado = usuarioServicePort.crearPropietario(usuarioRestMapper.toModel(request));
+    public ResponseEntity<UsuarioResponseDto> crearPropietario(@Valid @RequestBody  UsuarioRequestDto request) {
+        Usuario creado = usuarioHandler.crearPropietario(usuarioRestMapper.toModel(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
-    @Operation(summary = "Crear un empleado",
-            description = "Solo el PROPIETARIO. Crea un usuario con rol EMPLEADO asociado al restaurante de idRestaurante. La clave se guarda "
-                    + "encriptada. Si un dato no cumple las reglas de validación, responde 400 con el motivo.")
+        @Operation(summary = "Crear un empleado",
+            description = "Solo el PROPIETARIO. Crea un usuario con rol EMPLEADO asociado al restaurante "
+                    + "indicado en idRestaurante, que es obligatorio y debe ser un número positivo (este "
+                    + "servicio no comprueba que el restaurante exista en plazoleta-ms). La clave se guarda "
+                    + "encriptada. Si un dato no cumple las reglas de validación, responde 400 con el motivo; "
+                    + "si hay varios errores, se listan todos separados por punto y coma.")
     @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "403", description = SIN_PERMISO,
@@ -75,8 +78,8 @@ public class UsuarioRestController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/empleados")
-        public ResponseEntity<UsuarioResponseDto> crearEmpleado(@RequestBody EmpleadoRequestDto request) {
-        Usuario creado = usuarioServicePort.crearEmpleado(usuarioRestMapper.toModelEmpleado(request));
+        public ResponseEntity<UsuarioResponseDto> crearEmpleado(@Valid @RequestBody  EmpleadoRequestDto request) {
+        Usuario creado = usuarioHandler.crearEmpleado(usuarioRestMapper.toModelEmpleado(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
@@ -88,15 +91,17 @@ public class UsuarioRestController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/clientes")
-    public ResponseEntity<UsuarioResponseDto> crearCliente(@RequestBody UsuarioBasicoRequestDto request) {
-        Usuario creado = usuarioServicePort.crearCliente(usuarioRestMapper.toModelBasico(request));
+    public ResponseEntity<UsuarioResponseDto> crearCliente(@Valid @RequestBody  UsuarioBasicoRequestDto request) {
+        Usuario creado = usuarioHandler.crearCliente(usuarioRestMapper.toModelBasico(request));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioRestMapper.toResponse(creado));
     }
 
-    @Operation(summary = "Consultar un usuario por id",
+       @Operation(summary = "Consultar un usuario por id",
             description = "Cualquier usuario autenticado, sin importar su rol. Devuelve el id, nombre, "
-                    + "apellido, correo y rol (nunca la clave). Lo usa plazoleta-ms para comprobar que "
-                    + "el propietario de un restaurante existe y tiene rol PROPIETARIO.")
+                    + "apellido, correo, celular, rol e idRestaurante (este último solo lo tienen los "
+                    + "empleados); nunca devuelve la clave. Lo usa plazoleta-ms para comprobar que el "
+                    + "propietario de un restaurante existe y tiene rol PROPIETARIO, y para conocer el "
+                    + "celular de un usuario y el restaurante de un empleado.")
     @ApiResponse(responseCode = "401", description = NO_AUTENTICADO,
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = USUARIO_NO_ENCONTRADO,
@@ -107,7 +112,7 @@ public class UsuarioRestController {
     public ResponseEntity<UsuarioConsultaDto> obtenerUsuario(
             @Parameter(description = "Identificador del usuario", example = "1")
             @PathVariable Long id) {
-        Usuario usuario = usuarioServicePort.obtenerUsuarioPorId(id);
+        Usuario usuario = usuarioHandler.obtenerUsuarioPorId(id);
         return ResponseEntity.ok(usuarioRestMapper.toConsulta(usuario));
     }
 }

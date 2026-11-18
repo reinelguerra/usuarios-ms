@@ -1,6 +1,6 @@
 package com.plazoleta.usuarios.infrastructure.input.rest;
 
-import com.plazoleta.usuarios.domain.api.AutenticacionServicePort;
+import com.plazoleta.usuarios.application.handler.AutenticacionHandler;
 import com.plazoleta.usuarios.infrastructure.exception.ErrorResponse;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.LoginRequestDto;
 import com.plazoleta.usuarios.infrastructure.input.rest.dto.LoginResponseDto;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import jakarta.validation.Valid;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.CREDENCIALES_INVALIDAS;
 import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.DATOS_INVALIDOS;
 
@@ -24,10 +24,10 @@ import static com.plazoleta.usuarios.infrastructure.input.rest.DocumentacionApi.
 @Tag(name = "Autenticación", description = "Inicio de sesión y generación del token JWT")
 public class AuthRestController {
 
-    private final AutenticacionServicePort autenticacionServicePort;
+    private final AutenticacionHandler autenticacionHandler;
 
-    public AuthRestController(AutenticacionServicePort autenticacionServicePort) {
-        this.autenticacionServicePort = autenticacionServicePort;
+    public AuthRestController(AutenticacionHandler autenticacionHandler) {
+        this.autenticacionHandler = autenticacionHandler;
     }
 
     @Operation(summary = "Iniciar sesión",
@@ -42,8 +42,8 @@ public class AuthRestController {
     @ApiResponse(responseCode = "200", description = "Inicio de sesión correcto: devuelve el token JWT",
             content = @Content(schema = @Schema(implementation = LoginResponseDto.class)))
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
-        String token = autenticacionServicePort.iniciarSesion(request.correo(), request.clave());
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody  LoginRequestDto request) {
+        String token = autenticacionHandler.iniciarSesion(request.correo(), request.clave());
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
 }

@@ -7,6 +7,8 @@ import com.plazoleta.usuarios.domain.spi.PasswordEncoderPort;
 import com.plazoleta.usuarios.domain.spi.TokenGeneratorPort;
 import com.plazoleta.usuarios.domain.spi.UsuarioPersistencePort;
 import com.plazoleta.usuarios.infrastructure.security.JwtTokenGeneratorAdapter;
+import com.plazoleta.usuarios.application.handler.AutenticacionHandler;
+import com.plazoleta.usuarios.application.handler.AutenticacionHandlerImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,5 +56,10 @@ public class AutenticacionBeanConfiguration {
                                                              PasswordEncoderPort passwordEncoderPort,
                                                              TokenGeneratorPort tokenGeneratorPort) {
         return new AutenticacionUseCase(usuarioPersistencePort, passwordEncoderPort, tokenGeneratorPort);
+    }
+    
+    @Bean
+    public AutenticacionHandler autenticacionHandler(AutenticacionServicePort autenticacionServicePort) {
+        return new AutenticacionHandlerImpl(autenticacionServicePort);
     }
 }

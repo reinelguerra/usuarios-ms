@@ -7,6 +7,7 @@ import com.plazoleta.usuarios.domain.model.Usuario;
 import com.plazoleta.usuarios.domain.spi.PasswordEncoderPort;
 import com.plazoleta.usuarios.domain.spi.TokenGeneratorPort;
 import com.plazoleta.usuarios.domain.spi.UsuarioPersistencePort;
+import com.plazoleta.usuarios.domain.util.MensajeError;
 
 public class AutenticacionUseCase implements AutenticacionServicePort {
 
@@ -25,8 +26,8 @@ public class AutenticacionUseCase implements AutenticacionServicePort {
     @Override
     public String iniciarSesion(String correo, String clave) {
         if (esVacio(correo) || esVacio(clave)) {
-            throw new ValidacionException("El correo y la clave son obligatorios");
-        }
+            throw new ValidacionException(MensajeError.CORREO_Y_CLAVE_OBLIGATORIOS);
+                }
         Usuario usuario = usuarioPersistencePort.obtenerUsuarioPorCorreo(correo)
                 .orElseThrow(CredencialesInvalidasException::new);
         if (!passwordEncoderPort.coincide(clave, usuario.getClave())) {
